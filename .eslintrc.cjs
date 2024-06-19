@@ -9,4 +9,12 @@ module.exports = {
   parserOptions: {
     requireConfigFile: false,
   },
+  overrides: [
+    {
+      files: ['*.js', '*.jsx', '*.ts', '*.tsx', '*.mjs'],
+      parserOptions: {
+        ecmaVersion: 2021,
+      },
+    },
+  ],
 };

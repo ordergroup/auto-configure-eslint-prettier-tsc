@@ -56,12 +56,51 @@ const eslintConfig = {
   },
 };
 
+const posibleEslintFiles = [
+  '.eslintrc.json',
+  '.eslintrc.cjs',
+  '.eslintrc.mjs',
+  '.eslintrc.yaml',
+  '.eslintrc.yml',
+  'eslint.config.js',
+  'eslint.config.mjs',
+  'eslint.config.cjs',
+];
+
+const checkAndRenameExistingConfig = async () => {
+  for (const file of posibleEslintFiles) {
+    const filePath = path.resolve(process.cwd(), file);
+    if (fs.existsSync(filePath)) {
+      const answers = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'overwrite',
+          message: `File ${file} already exists. This package uses .eslintrc.js. Do you want to rename your file to old_${file} and use our config file? If you don't agree eslint might not work properly.`,
+          default: true,
+        },
+      ]);
+
+      const currentName = path.basename(filePath);
+      const newName = `old_${currentName}`;
+
+      if (answers.overwrite) {
+        const oldFilePath = `${path.dirname(filePath)}/${newName}`;
+        fs.renameSync(filePath, oldFilePath);
+        console.log(`Renamed ${currentName} to ${newName}`);
+      } else {
+        console.log(`Skipped renaming ${currentName}`);
+      }
+    }
+  }
+};
+
 const writeConfigFile = async (filePath, config, isModule, isJSONStringify) => {
   const prePath = isModule ? 'module.exports = ' : '';
 
+  const fileName = path.basename(filePath);
+
   const createFile = () => {
     const content = isJSONStringify ? JSON.stringify(config, null, 2) : config;
-
     fs.writeFileSync(filePath, `${prePath}${content}`);
   };
 
@@ -70,20 +109,20 @@ const writeConfigFile = async (filePath, config, isModule, isJSONStringify) => {
       {
         type: 'confirm',
         name: 'overwrite',
-        message: `File ${filePath} already exists. Overwrite?`,
+        message: `File ${fileName} already exists. Overwrite?`,
         default: true,
       },
     ]);
 
     if (answers.overwrite) {
       createFile();
-      console.log(`Overwritten ${filePath}`);
+      console.log(`Overwritten ${fileName}`);
     } else {
-      console.log(`Skipped ${filePath}`);
+      console.log(`Skipped ${fileName}`);
     }
   } else {
     createFile();
-    console.log(`Created ${filePath}`);
+    console.log(`Created ${fileName}`);
   }
 };
 
@@ -165,6 +204,8 @@ const installDependencies = async () => {
 };
 
 const run = async () => {
+  await checkAndRenameExistingConfig();
+
   await writeConfigFile(
     path.resolve(process.cwd(), '.eslintrc.js'),
     eslintConfig,

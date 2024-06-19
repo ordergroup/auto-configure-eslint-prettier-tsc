@@ -1,10 +1,10 @@
 {
   "name": "auto-configure-eslint-prettier-tsc",
-  "version": "1.0.25",
+  "version": "1.0.36",
   "description": "Automatic configuration for ESLint, Prettier, TSC",
-  "main": "configure.js",
+  "main": "configure.mjs",
   "bin": {
-    "configure-project": "./configure.js"
+    "configure-project": "./configure.mjs"
   },
   "dependencies": {
     "@react-native/eslint-config": "^0.74.84",
