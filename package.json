@@ -1,0 +1,25 @@
+{
+  "name": "auto-configure-eslint-prettier-tsc",
+  "version": "1.0.36",
+  "description": "Automatic configuration for ESLint, Prettier, TSC",
+  "main": "configure.mjs",
+  "bin": {
+    "configure-project": "./configure.mjs"
+  },
+  "dependencies": {
+    "@react-native/eslint-config": "^0.74.84",
+    "@tsconfig/react-native": "^3.0.5",
+    "eslint": "^8.57.0",
+    "inquirer": "9.2.23",
+    "prettier": "^2.8.0",
+    "typescript": "^5.4.5"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "update": "npm version patch && npm publish --access public",
+    "lint": "eslint '**/*.{js,ts,jsx,tsx}'",
+    "format": "prettier --write ."
+  }
+}
